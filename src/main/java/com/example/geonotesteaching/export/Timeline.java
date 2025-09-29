@@ -1,7 +1,5 @@
-package com.example.geonotesteaching.service;
+package com.example.geonotesteaching.export;
 
-import com.example.geonotesteaching.export.AbstractExporter;
-import com.example.geonotesteaching.export.Exporter;
 import com.example.geonotesteaching.model.Note;
 
 import java.util.Comparator;

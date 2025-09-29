@@ -1,7 +1,7 @@
 package com.example.geonotesteaching.app;
 
 import com.example.geonotesteaching.model.*;
-import com.example.geonotesteaching.service.Timeline;
+import com.example.geonotesteaching.export.Timeline;
 
 import java.time.Instant;
 import java.util.Scanner;
