@@ -11,7 +11,7 @@ public record Note(long id, String title, String content, GeoPoint location, Ins
         if(content != null) content = content.trim();
         if (content == null || content.trim().isEmpty()) content = "-";
         // Otra opción sería utilizar un operador ternario de la siguiente forma:
-        // 
+        //
         // content = (content == null || content.trim().isEmpty()) ? "-" : content.trim();
         if (location == null) throw new IllegalArgumentException("location requerido");
         if (createdAt == null) createdAt = Instant.now();
