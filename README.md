@@ -51,6 +51,29 @@ De esta forma, y para evitar tener packages vacíos y mantener la organización 
 - Excluir `ui` puesto que el proyecto concentra la presentación gráfica en la propia app.
 - Se centra en el **modelo** y en **servicios de apoyo**, además de la parte de **exportación**.
 
+
+### Ajuste de packages: `Timeline.Render`
+
+Para que el proyecto compile correctamente y se respete la **relación `sealed`** entre `AbstractExporter` y sus implementaciones, hemos decidido mover la clase interna `Render` de `Timeline` al package `export`.
+
+#### Motivo:
+
+- En Java, las clases **`sealed`** solo permiten heredar de ellas a clases que estén:  
+  1. Declaradas explícitamente en `permits`.  
+  2. Visibles desde el package de la clase `sealed`.  
+
+- Inicialmente, `Timeline.Render` estaba en `service`, mientras que `AbstractExporter` estaba en `export`.  
+- Aunque podríamos haber hecho `Render` **`public static`** y modificar su constructor para acceder a las notas, esto habría implicado **cambios significativos en la lógica original de `Timeline`**, que preferimos mantener intacta por ser código del profesor.
+
+#### Beneficios del cambio:
+
+1. `Timeline.Render` queda en el **mismo package que `AbstractExporter`**, cumpliendo con los requisitos de la clase `sealed`.  
+2. Evitamos modificar la lógica interna de `Timeline`, minimizando el riesgo de introducir errores.  
+3. Mantiene la **estructura limpia y coherente** de packages (`export` para exportadores, `service` para lógica de apoyo, `model` para entidades, `app` para el main).  
+
+En resumen, el cambio es una **adaptación técnica necesaria** para cumplir con las restricciones de Java `sealed` sin alterar la funcionalidad original del proyecto.
+
+
 ---
 
 ## Bloque A - Fundamentos y calentamiento (20-30')
