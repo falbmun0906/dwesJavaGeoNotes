@@ -1,4 +1,8 @@
-package com.example.geonotesteaching;
+package com.example.geonotesteaching.service;
+
+import com.example.geonotesteaching.model.GeoArea;
+import com.example.geonotesteaching.model.GeoPoint;
+
 // Un 'record' que contiene un método para usar 'record patterns'.
 // El 'record pattern' permite desestructurar un record directamente en los parámetros
 // de un método o en un 'if' o 'switch', lo que es muy útil para la validación y el filtrado.

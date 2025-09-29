@@ -1,4 +1,4 @@
-package com.example.geonotesteaching;
+package com.example.geonotesteaching.export;
 
 public final class JsonExporter extends AbstractExporter implements Exporter {
     private final String payload;

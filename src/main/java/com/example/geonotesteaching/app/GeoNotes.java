@@ -1,4 +1,7 @@
-package com.example.geonotesteaching;
+package com.example.geonotesteaching.app;
+
+import com.example.geonotesteaching.model.*;
+import com.example.geonotesteaching.service.Timeline;
 
 import java.time.Instant;
 import java.util.Scanner;
