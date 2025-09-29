@@ -88,22 +88,77 @@ En resumen, el cambio es una **adaptación técnica necesaria** para cumplir con
 
 ### A1. Validación y excepciones
 
-**Objetivo:** reforzar validación clásica y mensajes claros.
-
-* En `Note`, añade validaciones adicionales:
-
-  * `title` → mínimo 3 caracteres.
-  * `content` → recorta con `trim()`; si queda vacío, usa `"–"`.
-* Maneja la excepción en el menú (ya lo hace) y muestra un mensaje útil.
-  **Pista:** usa el *compact constructor* del `record`.
+Condicionales ``if`` añadidas para controlar los nuevos requirimientos:
+```java
+public record Note(long id, String title, String content, GeoPoint location, Instant createdAt, Attachment attachment) {
+    public Note {
+        ...
+        if(content != null) content = content.trim();
+        if (content == null || content.trim().isEmpty()) content = "-";
+        // Otra opción sería utilizar un operador ternario de la siguiente forma:
+        //
+        // content = (content == null || content.trim().isEmpty()) ? "-" : content.trim();
+        ...
+    }
+}
+```
 
 ### A2. Equals/HashCode vs. Records (conceptual)
 
-**Objetivo:** entender qué genera un `record`.
+Para este ejercicio hemos creado la clase `LegacyPoint`, que es una clase clásica de Java con los campos `lat` y `lon`, un constructor, getters, y los métodos `equals()`, `hashCode()` y `toString()` implementados manualmente. Esto nos permite comparar su comportamiento con el record `GeoPoint`.
 
-* Crea una clase `LegacyPoint` (clásica, *no record*) con `double lat, lon`, **equals**, **hashCode** y **toString** manuales.
-* Compara su uso con `GeoPoint`.
-  **Entrega:** breve comentario en el código o README: ¿qué ventajas / cuándo *no* usar `record`?
+```java
+package com.example.geonotesteaching.model;
+
+import java.util.Objects;
+
+public class LegacyPoint {
+    private double lat;
+    private double lon;
+
+    public LegacyPoint(double lat, double lon) {
+        this.lat = lat;
+        this.lon = lon;
+    }
+
+    public double getLat() { return lat; }
+    public double getLon() { return lon; }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof LegacyPoint)) return false;
+        LegacyPoint that = (LegacyPoint) o;
+        return Double.compare(that.lat, lat) == 0 &&
+                Double.compare(that.lon, lon) == 0;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(lat, lon);
+    }
+
+    @Override
+    public String toString() {
+        return "LegacyPoint{" + "lat=" + lat + ", lon=" + lon + '}';
+    }
+}
+```
+
+**Nota de diseño:**  
+Hemos hecho los campos de `LegacyPoint` privados y añadido getters como buena práctica de Java. Esto protege la información interna y sigue principios SOLID como **responsabilidad única** y **abierto/cerrado**, evitando que otras clases dependan directamente de la implementación interna.
+
+**Tabla comparativa entre ``GeoPoint`` (record) y ``LegacyPoint`` (clásica)**:
+
+| Característica           | GeoPoint (record)                             | LegacyPoint (clásica)                               |
+|--------------------------|-----------------------------------------------|-----------------------------------------------------|
+| Declaración              | `public record GeoPoint(double lat, double lon)` | `public class LegacyPoint { double lat, lon; ... }` |
+| Constructor              | Generado automáticamente; validaciones opcionales en compact constructor | Manual (`public LegacyPoint(double lat, double lon)`) |
+| Getters                  | Generados automáticamente (`lat()`, `lon()`)  | Manual (`getLat()`, `getLon()`)                    |
+| equals / hashCode / toString | Automáticos                                | Manuales con `Objects.hash()` y `instanceof`       |
+| Inmutabilidad            | Sí, por defecto                                | No, campos mutables a menos que sean `final`      |
+| Código necesario         | Muy conciso                                   | Mucho más largo, repetitivo                        |
+| Uso recomendado          | Datos simples, inmutables                     | Necesitas setters, herencia o lógica compleja     |
 
 ---
 
@@ -111,17 +166,23 @@ En resumen, el cambio es una **adaptación técnica necesaria** para cumplir con
 
 ### B1. Nuevo subtipo: `Video`
 
-**Objetivo:** ampliar jerarquía sellada.
+Nuevos ``case`` añadidos a ``public static String describeAttachment(Attachment a)``:
 
-* Crea `public record Video(String url, int width, int height, int seconds) implements Attachment`.
-* Actualiza `Attachment` (permits …) para incluir `Video`.
-* Añade soporte en `Describe.describeAttachment`:
+```java
+final class Describe {
+    public static String describeAttachment(Attachment a) {
+        return switch (a) {
+            ...
+            case Video v when v.seconds() > 120 -> "📹 Vídeo largo";
+            case Video v -> "📹 Video";
+        };
+    }
+}
+```
 
-  ```java
-  case Video v when v.seconds() > 120 -> "🎬 Vídeo largo";
-  case Video v -> "🎬 Vídeo";
-  ```
-* **Exhaustividad:** comprueba que el `switch` obliga a cubrir `Video`.
+Como se puede observar en la siguiente captura, el ``switch`` obliga a cubrir ``Video``.
+
+(poner imagen aquí)
 
 ### B2. Formato corto vs. largo en `switch`
 
