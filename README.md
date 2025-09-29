@@ -186,17 +186,22 @@ Como se puede observar en la siguiente captura, el ``switch`` obliga a cubrir ``
 
 ### B2. Formato corto vs. largo en `switch`
 
-**Objetivo:** usar `yield` con bloques.
+En nuestro caso, hemos optado por aplicar el formato largo en el ``case Link l`` ya que es el caso que contiene una lógica que justifique su uso.
 
-* Cambia alguna rama de `Describe` a bloque:
-
-  ```java
-  case Audio a when a.duration() > 300 -> {
-    var mins = a.duration() / 60;
-    yield "🎵 Audio (" + mins + " min)";
-  }
-  ```
-* Asegúrate de compilar y probar.
+```java
+final class Describe {
+    public static String describeAttachment(Attachment a) {
+        return switch (a) {
+            ...
+            case Link l -> {
+                String label = (l.label() == null || l.label().isEmpty()) ? l.url() : l.label();
+                yield "🔗 " + label;
+            }
+            ...
+        };
+    }
+}
+```
 
 ---
 
@@ -204,22 +209,97 @@ Como se puede observar en la siguiente captura, el ``switch`` obliga a cubrir ``
 
 ### C1. Export JSON pretty
 
-**Objetivo:** mejorar legibilidad del JSON.
+Se ha modificado la exportación JSON para mejorar la legibilidad y asegurar la validez del contenido. Ahora cada nota se representa en múltiples líneas con sangría uniforme, incluyendo un bloque propio para `"location"` con sus campos `lat` y `lon`, y la lista completa de notas se alinea dentro del bloque `"notes"`. Además, se escapan las comillas dobles en `content` mediante `replace("\"", "\\\"")` para evitar que rompan el JSON. Para facilitar la escritura y visualización de este formato se utilizan text blocks (`"""`), permitiendo estructurar la cadena de forma clara y similar a Kotlin. Estas mejoras no cambian la validez del JSON, pero hacen que sea mucho más legible y fácil de depurar o documentar.
 
-* En `Timeline.Render.export()`, ajusta el *text block* para alinear y sangrar mejor.
-* Escapa comillas del `content` si hiciera falta (p. ej., `replace("\"","\\\"")` antes de `formatted`).
+```java
+public final class Timeline {
+    private final Map<Long, Note> notes = new LinkedHashMap<>();
+
+    public void addNote(Note note) { notes.put(note.id(), note); }
+    public Note getNote(long id) { return notes.get(id); }
+    public Map<Long, Note> getNotes() { return notes; }
+
+    // Esta clase final genera la salida JSON usando 'text blocks'.
+    public final class Render extends AbstractExporter implements Exporter {
+        @Override public String export() {
+            var notesList = notes.values().stream()
+                // Un 'text block' es una cadena de texto multilinea que no necesita
+                // concatenación ni caracteres de escape para las comillas.
+                .map(note -> {
+                    // Escapamos las comillas dobles en content
+                    String safeContent = note.content().replace("\"", "\\\"");
+                    return """
+                           {
+                             "id": %d,
+                             "title": "%s",
+                             "content": "%s",
+                             "location": {
+                               "lat": %f,
+                               "lon": %f
+                             },
+                             "createdAt": "%s"
+                           }
+                         """.formatted(
+                            note.id(),
+                            note.title(),
+                            safeContent,
+                            note.location().lat(),
+                            note.location().lon(),
+                            note.createdAt()
+                    );
+                })
+                    .sorted(Comparator.reverseOrder())
+                    .collect(Collectors.joining(",\n"));
+
+            return """
+                   {
+                     "notes": [
+                   %s
+                     ]
+                   }
+                   """.formatted(notesList);
+        }
+    }
+}
+```
 
 ### C2. Export Markdown (extra)
 
-**Objetivo:** practicar *text blocks*.
+Hemos creado la clase ``MarkdownExporter``, lo que nos permite exportar las notas en formato .md siguiendo el patrón requerido ``[ID 1] Título — (lat, lon) — YYYY-MM-DD``
 
-* Crea `MarkdownExporter` (implementa `Exporter`) que genere:
+```java
+public final class MarkdownExporter extends AbstractExporter {
 
-  ```md
-  # GeoNotes
-  - [ID 1] Título — (lat, lon) — YYYY-MM-DD
-  ```
-* Muestra su salida desde la CLI (añade opción 6: “Exportar Markdown”).
+    private final List<Note> notes;
+
+    public MarkdownExporter(List<Note> notes) {
+        this.notes = notes;
+    }
+
+    @Override
+    public String export() {
+        var builder = new StringBuilder("# GeoNotes\n\n");
+        for (Note note : notes) {
+            builder.append("- [ ID ")
+                    .append(note.id())
+                    .append(" ] ")
+                    .append(note.title())
+                    .append(" — (")
+                    .append(note.location().lat())
+                    .append(", ")
+                    .append(note.location().lon())
+                    .append(") — ")
+                    .append(note.createdAt().toString().substring(0, 10)) // YYYY-MM-DD
+                    .append("\n");
+        }
+        return builder.toString();
+    }
+}
+```
+
+En la siguiente captura se ve un ejemplo de la salida por consola del formato Markdown.
+
+(poner imagen)
 
 ---
 
