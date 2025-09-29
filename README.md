@@ -1,6 +1,10 @@
 # Tarea Java por parejas
 
-Francisco Alba y Rocío Luque — Curso 2025/26
+``Francisco Alba y Rocío Luque — Curso 2025/26``
+
+
+
+<br>
 
 # Índice de contenidos
 
@@ -17,16 +21,35 @@ Francisco Alba y Rocío Luque — Curso 2025/26
 - [Apéndice — Snippets útiles](#apéndice-—-snippets-útiles)
 
 
-# Hoja de ejercicios — GeoNotesTeaching (Java 21)
+# Proyecto GeoNotes – Organización en Packages
+  
+Venimos de trabajar principalmente con **Kotlin** siguiendo el modelo **MVC** (Model–View–Controller), donde solemos estructurar los proyectos en packages como `model`, `data`, `service`, `ui` y `utils`, en la que cada capa tiene una responsabilidad clara:
 
-## Cómo empezar (5′)
+- **Model** → contiene las entidades del dominio (por ejemplo, `User`, `Note`…), sus atributos y reglas básicas.
+- **View (ui)** → gestiona la interfaz con el usuario (en nuestro caso, normalmente terminal o interfaz gráfica).
+- **Controller (app)** → coordina la lógica, recibe las acciones de la vista y las traduce en operaciones sobre el modelo.
 
-1. Abre el proyecto en IntelliJ (File → Open… → `geonotes-teaching-java21/`).
-2. Asegúrate de **JDK 21**.
-3. Ejecuta:
+A menudo lo complementábamos con otros packages:
+- **data** → acceso a la base de datos (DAOs, repositorios).
+- **service** → lógica de negocio (procesar, validar, aplicar reglas).
+- **utils** → funciones auxiliares reutilizables.
 
-   * CLI: `Tasks > application > run`
-   * Ejemplos: `Tasks > application > examples`
+---
+
+## Organización en este proyecto Java
+
+En este caso, al trabajar con **Java** y con un proyecto más pequeño, hemos decidido simplificar la estructura. Para mantener claridad y buenas prácticas, hemos optado por la siguiente distribución de packages:
+
+- **app** → Contiene el punto de entrada de la aplicación (`GeoNotes`).
+- **model** → Incluye las entidades principales del dominio: `GeoPoint`, `GeoArea`, `Note`, y los adjuntos (`Attachment`, `Photo`, `Audio`, `Link`).
+- **export** → Agrupa todo lo relacionado con la exportación de datos (`Exporter`, `AbstractExporter`, `JsonExporter`).
+- **service** → Lógica auxiliar como búsqueda, descripción y organización temporal (`Match`, `Describe`, `Timeline`).
+
+De esta forma, y para evitar tener packages vacíos y mantener la organización clara, separando responsabilidades sin añadir complejidad innecesaria, hemos decidido:
+
+- No incluir `data` ya que no presenta persistencia en base de datos.
+- Excluir `ui` puesto que el proyecto concentra la presentación gráfica en la propia app.
+- Se centra en el **modelo** y en **servicios de apoyo**, además de la parte de **exportación**.
 
 ---
 
