@@ -1,5 +1,6 @@
 package com.example.geonotesteaching.app;
 
+import com.example.geonotesteaching.export.MarkdownExporter;
 import com.example.geonotesteaching.model.*;
 import com.example.geonotesteaching.export.Timeline;
 
@@ -76,7 +77,13 @@ public class GeoNotes {
                     case 2 -> listNotes();
                     case 3 -> filterNotes();
                     case 4 -> exportNotesToJson();
-                    case 5 -> running = false;
+                    case 5 -> {
+                        var exporter = new MarkdownExporter(
+                                new java.util.ArrayList<>(timeline.getNotes().values())
+                        );
+                        System.out.println(exporter.export());
+                    }
+                    case 6 -> running = false;
                     default -> System.out.println("❌ Opción no válida. Inténtalo de nuevo.");
                 }
             } catch (NumberFormatException e) {
@@ -96,7 +103,8 @@ public class GeoNotes {
         System.out.println("2. Listar todas las notas");
         System.out.println("3. Filtrar notas por palabra clave");
         System.out.println("4. Exportar notas a JSON (Text Blocks)");
-        System.out.println("5. Salir");
+        System.out.println("5. Exportar Markdown");
+        System.out.println("6. Salir");
         System.out.print("Elige una opción: ");
     }
 
