@@ -297,9 +297,9 @@ public final class MarkdownExporter extends AbstractExporter {
 }
 ```
 
-En la siguiente captura se ve un ejemplo de la salida por consola del formato Markdown.
+En la siguiente captura se ve un ejemplo de la salida por consola del formato Markdown:
 
-(poner imagen)
+<img width="2269" height="592" alt="Captura de pantalla 2025-09-30 005423" src="https://github.com/user-attachments/assets/c740190d-437f-4828-93cc-221d2d4584bb" />
 
 ---
 
