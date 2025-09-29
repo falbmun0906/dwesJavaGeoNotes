@@ -22,23 +22,39 @@ public final class Timeline {
             var notesList = notes.values().stream()
                 // Un 'text block' es una cadena de texto multilinea que no necesita
                 // concatenación ni caracteres de escape para las comillas.
-                .map(note -> """
-                        {
-                          "id": %d,
-                          "title": "%s",
-                          "content": "%s",
-                          "location": { "lat": %f, "lon": %f },
-                          "createdAt": "%s"
-                        }
-                        """.formatted(
-                            note.id(), note.title(), note.content(),
-                            note.location().lat(), note.location().lon(),
-                            note.createdAt()))
-                .sorted(Comparator.reverseOrder())
-                .collect(Collectors.joining(",\n"));
+                .map(note -> {
+                    // Escapamos las comillas dobles en content
+                    String safeContent = note.content().replace("\"", "\\\"");
+                    return """
+                           {
+                             "id": %d,
+                             "title": "%s",
+                             "content": "%s",
+                             "location": {
+                               "lat": %f,
+                               "lon": %f
+                             },
+                             "createdAt": "%s"
+                           }
+                         """.formatted(
+                            note.id(),
+                            note.title(),
+                            safeContent,
+                            note.location().lat(),
+                            note.location().lon(),
+                            note.createdAt()
+                    );
+                })
+                    .sorted(Comparator.reverseOrder())
+                    .collect(Collectors.joining(",\n"));
+
             return """
-                    { "notes": [ %s ] }
-                    """.formatted(notesList);
+                   {
+                     "notes": [
+                   %s
+                     ]
+                   }
+                   """.formatted(notesList);
         }
     }
 }
