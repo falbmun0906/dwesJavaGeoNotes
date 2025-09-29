@@ -182,7 +182,7 @@ final class Describe {
 
 Como se puede observar en la siguiente captura, el ``switch`` obliga a cubrir ``Video``.
 
-(poner imagen aquí)
+<img width="1231" height="298" alt="Captura de pantalla 2025-09-30 000802" src="https://github.com/user-attachments/assets/1148690a-3f19-4570-b652-7fa32f537113" />
 
 ### B2. Formato corto vs. largo en `switch`
 
