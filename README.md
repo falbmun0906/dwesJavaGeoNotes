@@ -361,7 +361,7 @@ Hemos elegido esta variante porque queríamos explorar las distintas formas que 
 
 Un ejemplo de la salida por consola es la mostrada a continuación:
 
-(poner captura)
+<img width="1289" height="298" alt="captura_listadoReverso" src="https://github.com/user-attachments/assets/3809b0da-b246-4dda-a1dc-01ea946525d9" />
 
 ### D2. Búsqueda con varios criterios
 
