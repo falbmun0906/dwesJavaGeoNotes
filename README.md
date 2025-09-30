@@ -21,7 +21,19 @@
 - [Apéndice — Snippets útiles](#apéndice-—-snippets-útiles)
 
 
-# Proyecto GeoNotes – Organización en Packages
+# Proyecto GeoNotes
+
+## Flujo de trabajo en pareja: IntelliJ Idea Code With Me
+
+Para este proyecto, hemos trabajado en pareja usando **IntelliJ Code With Me** (aprovechando la licencia Student Pack que nos ofrece JetBrains por ser alumnos del I.E.S. Rafael Alberti), editando directamente sobre la rama `main` y haciendo commits regulares. Esto nos ha permitido avanzar juntos sin preocuparnos por la gestión de varias ramas ni conflictos complejos de merge, lo que simplifica mucho la coordinación.
+
+Trabajar en tiempo real con Code With Me nos ha dado la ventaja de poder discutir decisiones de diseño, revisar cambios al momento y resolver dudas al instante. Cada miembro podía ver lo que el otro estaba haciendo, lo que hizo que la colaboración fuera más fluida y eficiente que si trabajáramos por separado.
+
+Además, los commits claros y descriptivos no han sirvido como registro de todo lo que íbamos implementando. Esto nos ha permitido mantener un historial ordenado y fácil de seguir, lo que facilita tanto la revisión del proyecto como su entrega final.  
+
+---
+
+## Organización en Packages
   
 Venimos de trabajar principalmente con **Kotlin** siguiendo el modelo **MVC** (Model–View–Controller), donde solemos estructurar los proyectos en packages como `model`, `data`, `service`, `ui` y `utils`, en la que cada capa tiene una responsabilidad clara:
 
@@ -34,17 +46,7 @@ A menudo lo complementábamos con otros packages:
 - **service** → lógica de negocio (procesar, validar, aplicar reglas).
 - **utils** → funciones auxiliares reutilizables.
 
----
-
-## Flujo de trabajo en pareja: IntelliJ Idea Code With Me
-
-Para este proyecto, hemos trabajado en pareja usando **IntelliJ Code With Me** (aprovechando la licencia Student Pack que nos ofrece JetBrains por ser alumnos del I.E.S. Rafael Alberti), editando directamente sobre la rama `main` y haciendo commits regulares. Esto nos ha permitido avanzar juntos sin preocuparnos por la gestión de varias ramas ni conflictos complejos de merge, lo que simplifica mucho la coordinación.
-
-Trabajar en tiempo real con Code With Me nos ha dado la ventaja de poder discutir decisiones de diseño, revisar cambios al momento y resolver dudas al instante. Cada miembro podía ver lo que el otro estaba haciendo, lo que hizo que la colaboración fuera más fluida y eficiente que si trabajáramos por separado.
-
-Además, los commits claros y descriptivos no han sirvido como registro de todo lo que íbamos implementando. Esto nos ha permitido mantener un historial ordenado y fácil de seguir, lo que facilita tanto la revisión del proyecto como su entrega final.  
-
-## Organización en este proyecto Java
+### Organización en este proyecto Java
 
 En este caso, al trabajar con **Java** y con un proyecto más pequeño, hemos decidido simplificar la estructura. Para mantener claridad y buenas prácticas, hemos optado por la siguiente distribución de packages:
 
@@ -80,7 +82,6 @@ Para que el proyecto compile correctamente y se respete la **relación `sealed`*
 3. Mantiene la **estructura limpia y coherente** de packages (`export` para exportadores, `service` para lógica de apoyo, `model` para entidades, `app` para el main).  
 
 En resumen, el cambio es una **adaptación técnica necesaria** para cumplir con las restricciones de Java `sealed` sin alterar la funcionalidad original del proyecto.
-
 
 ---
 
