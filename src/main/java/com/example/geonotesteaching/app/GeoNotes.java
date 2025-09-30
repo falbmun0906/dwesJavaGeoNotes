@@ -6,6 +6,7 @@ import com.example.geonotesteaching.export.Timeline;
 
 import java.time.Instant;
 import java.util.Scanner;
+import com.example.geonotesteaching.service.*;
 
 /*
  * GeoNotes — Clase principal con una CLI sencilla.
@@ -75,7 +76,7 @@ public class GeoNotes {
                 switch (choice) {
                     case 1 -> createNote();
                     case 2 -> listNotes();
-                    case 3 -> filterNotes();
+                    case 3 -> busquedaAvanzada();
                     case 4 -> exportNotesToJson();
                     case 5 -> {
                         var exporter = new MarkdownExporter(
@@ -98,11 +99,26 @@ public class GeoNotes {
         System.out.println("¡Gracias por usar GeoNotes! 👋");
     }
 
+    private static void busquedaAvanzada() {
+        System.out.println("""
+                ----------Filtrar nota----------
+                1. Por palabra clave
+                2. Por area geográfica (lat/lon)
+                Elige opción: 
+                """);
+        int option = Integer.parseInt(scanner.nextLine ());
+
+        switch (option) {
+            case 1 -> filterNotes();
+            case 2 -> filterNotesByArea();
+        }
+    }
+
     private static void printMenu() {
         System.out.println("\n--- Menú ---");
         System.out.println("1. Crear una nueva nota");
         System.out.println("2. Listar todas las notas");
-        System.out.println("3. Filtrar notas por palabra clave");
+        System.out.println("3. Búsqueda avanzada");
         System.out.println("4. Exportar notas a JSON (Text Blocks)");
         System.out.println("5. Exportar Markdown");
         System.out.println("6. Listar últimas notas");
@@ -179,6 +195,41 @@ public class GeoNotes {
             return;
         }
         filtered.forEach(n -> System.out.printf("ID: %d | %s | %s%n", n.id(), n.title(), n.content()));
+    }
+
+    private static void filterNotesByArea() {
+        System.out.println("\n--- Filtrar notas por área geográfica ---");
+
+        System.out.print("Latitud mínima: ");
+        double lat1 = Double.parseDouble(scanner.nextLine());
+        System.out.print("Latitud máxima: ");
+        double lat2 = Double.parseDouble(scanner.nextLine());
+        System.out.print("Longitud mínima: ");
+        double lon1 = Double.parseDouble(scanner.nextLine());
+        System.out.print("Longitud máxima: ");
+        double lon2 = Double.parseDouble(scanner.nextLine());
+
+        double minLat = Math.min(lat1, lat2);
+        double maxLat = Math.max(lat1, lat2);
+        double minLon = Math.min(lon1, lon2);
+        double maxLon = Math.max(lon1, lon2);
+
+        GeoPoint topLeft = new GeoPoint(minLat, minLon);
+        GeoPoint bottomRight = new GeoPoint(maxLat, maxLon);
+        GeoArea area = new GeoArea(topLeft, bottomRight);
+
+        var filtered = timeline.getNotes().values().stream()
+                .filter(note -> Match.isInArea(note.location(), area))
+                .toList();
+
+        if (filtered.isEmpty()) {
+            System.out.println("No se encontraron notas en esa área.");
+        } else {
+            System.out.println("\n--- Resultados ---");
+            filtered.forEach(n -> System.out.printf("ID: %d | %s | %s | (%.2f, %.2f)%n",
+                    n.id(), n.title(), n.content(),
+                    n.location().lat(), n.location().lon()));
+        }
     }
 
     private static void exportNotesToJson() {

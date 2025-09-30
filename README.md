@@ -365,6 +365,72 @@ Un ejemplo de la salida por consola es la mostrada a continuación:
 
 ### D2. Búsqueda con varios criterios
 
+Para este bloque, hemos conservado la función proporcionanda originalmente en el proyecto, ``filterNotes``, y creado una nueva función para hacer el filtro por rango de lat/lon (o área).
+
+```java
+private static void filterNotesByArea() {
+        System.out.println("\n--- Filtrar notas por área geográfica ---");
+
+        System.out.print("Latitud mínima: ");
+        double lat1 = Double.parseDouble(scanner.nextLine());
+        System.out.print("Latitud máxima: ");
+        double lat2 = Double.parseDouble(scanner.nextLine());
+        System.out.print("Longitud mínima: ");
+        double lon1 = Double.parseDouble(scanner.nextLine());
+        System.out.print("Longitud máxima: ");
+        double lon2 = Double.parseDouble(scanner.nextLine());
+
+        double minLat = Math.min(lat1, lat2);
+        double maxLat = Math.max(lat1, lat2);
+        double minLon = Math.min(lon1, lon2);
+        double maxLon = Math.max(lon1, lon2);
+
+        GeoPoint topLeft = new GeoPoint(minLat, minLon);
+        GeoPoint bottomRight = new GeoPoint(maxLat, maxLon);
+        GeoArea area = new GeoArea(topLeft, bottomRight);
+
+        var filtered = timeline.getNotes().values().stream()
+                .filter(note -> Match.isInArea(note.location(), area))
+                .toList();
+
+        if (filtered.isEmpty()) {
+            System.out.println("No se encontraron notas en esa área.");
+        } else {
+            System.out.println("\n--- Resultados ---");
+            filtered.forEach(n -> System.out.printf("ID: %d | %s | %s | (%.2f, %.2f)%n",
+                    n.id(), n.title(), n.content(),
+                    n.location().lat(), n.location().lon()));
+        }
+    }
+```
+
+También, hemos añadido una llamada a dichas funciones a través de un nuevo menú al que se accede desde el menú principal al elegir la opción ``3. Búsqueda avanzada`` y que llama a la función ``busquedaAvanzada()``.
+
+```java
+private static void busquedaAvanzada() {
+        System.out.println("""
+                ----------Filtrar nota----------
+                1. Por palabra clave
+                2. Por area geográfica (lat/lon)
+                Elige opción: 
+                """);
+        int option = Integer.parseInt(scanner.nextLine ());
+
+        switch (option) {
+            case 1 -> filterNotes();
+            case 2 -> filterNotesByArea();
+        }
+    }
+```
+
+Para comprobar el funcionamiento de esta nueva característica, hemos creado dos notas, una ubicada en (1, 1) y otra en (3, 3), llamadas ``Nota 1`` y ``Nota 2`` respectivamente:
+
+(poner capturas de la creación de: (dentro y fuera)
+
+Tras esto, hemos realizado una búsqueda avanzada por ``lat / lon``
+
+-- PENDIENTE SEGUIR DESDE AQUÍ -- 
+
 **Objetivo:** filtros encadenados.
 
 * En CLI, añade una opción “Buscar avanzada”:
