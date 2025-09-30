@@ -83,7 +83,8 @@ public class GeoNotes {
                         );
                         System.out.println(exporter.export());
                     }
-                    case 6 -> running = false;
+                    case 6 -> listarUltimasNotas(timeline, scanner);
+                    case 7 -> running = false;
                     default -> System.out.println("❌ Opción no válida. Inténtalo de nuevo.");
                 }
             } catch (NumberFormatException e) {
@@ -104,7 +105,8 @@ public class GeoNotes {
         System.out.println("3. Filtrar notas por palabra clave");
         System.out.println("4. Exportar notas a JSON (Text Blocks)");
         System.out.println("5. Exportar Markdown");
-        System.out.println("6. Salir");
+        System.out.println("6. Listar últimas notas");
+        System.out.println("7. Salir");
         System.out.print("Elige una opción: ");
     }
 
@@ -218,5 +220,14 @@ public class GeoNotes {
          *   pero explica a los alumnos que en Java 21 LinkedHashMap implementa SequencedMap y se puede pedir la vista invertida.
          * - Virtual Threads: demo aparte en el otro proyecto “moderno” (no se usan aquí).
          */
+    }
+
+    private static void listarUltimasNotas(Timeline timeline, Scanner scanner) {
+        System.out.print("Introduce el número de notas a listar: ");
+        int n = Integer.parseInt(scanner.nextLine());
+
+        var latestNotes = timeline.latest(n);
+        latestNotes.forEach(note ->
+                System.out.println("- " + note.title() + " (" + note.createdAt() + ")"));
     }
 }

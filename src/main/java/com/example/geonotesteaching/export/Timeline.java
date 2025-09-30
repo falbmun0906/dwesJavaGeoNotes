@@ -2,10 +2,12 @@ package com.example.geonotesteaching.export;
 
 import com.example.geonotesteaching.model.Note;
 
+import java.util.List;
 import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.Map;
 import java.util.stream.Collectors;
+
 // La clase 'Timeline' usa un 'SequencedMap' para mantener las notas en orden de inserción.
 // A diferencia de un HashMap, un 'SequencedMap' garantiza el orden y permite acceder
 // al primer y último elemento de forma eficiente.
@@ -15,6 +17,16 @@ public final class Timeline {
     public void addNote(Note note) { notes.put(note.id(), note); }
     public Note getNote(long id) { return notes.get(id); }
     public Map<Long, Note> getNotes() { return notes; }
+
+    /**
+     * Devuelve las n notas más recientes ordenadas por fecha de creación (descendente).
+     */
+    public List<Note> latest(int n) {
+        return notes.values().stream()
+                .sorted((a, b) -> b.createdAt().compareTo(a.createdAt())) // descendente
+                .limit(n)
+                .toList();
+    }
 
     // Esta clase final genera la salida JSON usando 'text blocks'.
     public final class Render extends AbstractExporter implements Exporter {
