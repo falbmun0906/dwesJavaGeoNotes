@@ -322,16 +322,46 @@ En la siguiente captura se ve un ejemplo de la salida por consola del formato Ma
 
 ### D1. Orden por fecha y límite
 
-**Objetivo:** practicar Streams y Comparator.
+En nuestro caso, para resolver el ejercicio de listar las últimas **N** notas optamos por implementar el método `latest(int n)` usando una lambda directamente en el `Comparator`:
 
-* Añade método en `Timeline`:
+En ``Timeline``:
 
-  ```java
-  public java.util.List<Note> latest(int n)
-  ```
+```java
+public List<Note> latest(int n) {
+        return notes.values().stream()
+                .sorted((a, b) -> b.createdAt().compareTo(a.createdAt())) // descendente
+                .limit(n)
+                .toList();
+    }
+```
 
-  que devuelva las `n` notas más recientes (por `createdAt` descendente).
-* Añade opción en CLI: “Listar últimas N”.
+En ``GeoNotes`` añadimos:
+
+```java
+private static void listarUltimasNotas(Timeline timeline, Scanner scanner) {
+        System.out.print("Introduce el número de notas a listar: ");
+        int n = Integer.parseInt(scanner.nextLine());
+
+        var latestNotes = timeline.latest(n);
+        latestNotes.forEach(note ->
+                System.out.println("- " + note.title() + " (" + note.createdAt() + ")"));
+    }
+```
+En lugar de usar la forma propuesta en el snippet del profesor con:
+
+```java
+var latest = timeline.getNotes()
+.values().stream()
+.sorted(java.util.Comparator.comparing(Note::createdAt).reversed())
+.limit(n)
+.toList();
+```
+
+Hemos elegido esta variante porque queríamos explorar las distintas formas que ofrece Java para expresar comparadores, comparando así con el enfoque más declarativo de Kotlin (similar a usar sortedByDescending).
+
+Un ejemplo de la salida por consola es la mostrada a continuación:
+
+(poner captura)
 
 ### D2. Búsqueda con varios criterios
 
