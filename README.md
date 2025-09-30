@@ -12,7 +12,7 @@
 - [Organización en Packages](#organización-en-packages)
     - [Organización en este proyecto Java](#organización-en-este-proyecto-java)
     - [Ajuste de packages: `Timeline.Render`](#ajuste-de-packages-timelinerender)
-- [Bloque A - Fundamentos y calentamiento (20-30')](#bloque-a---fundamentos-y-calentamiento-20-30)
+- [Bloque A — Fundamentos y calentamiento (20-30')](#bloque-a---fundamentos-y-calentamiento-20-30)
     - [A1. Validación y excepciones](#a1-validaci%C3%B3n-y-excepciones)
     - [A2. Equals/HashCode vs. Records (conceptual)](#a2-equalshashcode-vs-records-conceptual)
 - [Bloque B — Jerarquía *sealed* y `switch` moderno (25–35′)](#bloque-b--jerarqu%C3%ADa-sealed-y-switch-moderno-2535)
