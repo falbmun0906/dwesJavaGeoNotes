@@ -425,19 +425,13 @@ private static void busquedaAvanzada() {
 
 Para comprobar el funcionamiento de esta nueva característica, hemos creado dos notas, una ubicada en (1, 1) y otra en (3, 3), llamadas ``Nota 1`` y ``Nota 2`` respectivamente:
 
-(poner capturas de la creación de: (dentro y fuera)
+<img width="1262" height="300" alt="captura_d2_nota_dentrofuera" src="https://github.com/user-attachments/assets/aea8b4bd-4991-4484-9ae7-cbc006f0a223" />
 
-Tras esto, hemos realizado una búsqueda avanzada por ``lat / lon``
+Tras esto, hemos realizado una búsqueda avanzada por ``lat / lon``, introduciendo los valores ``0, 2, 0 y 2``, respectivamente, para así dejar la primera nota dentro del área y la dos fuera, obteniendo el siguiente resultado por consola:
 
--- PENDIENTE SEGUIR DESDE AQUÍ -- 
+<img width="1245" height="221" alt="captura_d2_salida" src="https://github.com/user-attachments/assets/7752c527-5214-47a8-a5e4-e9c602eb3290" />
 
-**Objetivo:** filtros encadenados.
-
-* En CLI, añade una opción “Buscar avanzada”:
-
-  * Por rango de lat/lon (ej.: lat entre A–B).
-  * Por palabra clave en `title` o `content`.
-* Reutiliza `Match.isInArea` o crea un método auxiliar.
+Como se puede apreciar en la captura, la nueva funcionalidad filtra la nota que se encuentra en las coordenadas ``(1,1)``, mientras que omite la segunda nota, que se encuentra en las coordenadas ``(3,3)``.
 
 ---
 
