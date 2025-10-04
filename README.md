@@ -515,7 +515,7 @@ private static void consultarUbicacion() {
 
 Ejemplo de salida por consola:
 
-(Pendiente insertar captura)
+<img width="1092" height="540" alt="captura-salida-where" src="https://github.com/user-attachments/assets/1f9ceb8e-f1f7-46c6-a957-76c4ebe62255" />
 
 ---
 
