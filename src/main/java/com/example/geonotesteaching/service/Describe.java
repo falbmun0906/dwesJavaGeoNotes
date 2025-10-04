@@ -6,7 +6,7 @@ import com.example.geonotesteaching.model.*;
 // Los 'switch expressions' permiten que el 'switch' sea una expresión que devuelve un valor.
 // El 'pattern matching' en el 'case' permite desestructurar el objeto y
 // aplicar una condición ('when') de forma concisa.
-final class Describe {
+public final class Describe {
 
     public static int mediaPixels(Object o) {
         if (o instanceof Photo p) {

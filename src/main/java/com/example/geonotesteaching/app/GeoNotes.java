@@ -81,7 +81,8 @@ public class GeoNotes {
                     case 5 -> exportMarkDown();
                     case 6 -> listarUltimasNotas(timeline, scanner);
                     case 7 -> consultarUbicacion();
-                    case 8 -> running = false;
+                    case 8 -> listarNotasInvertidas();
+                    case 9 -> running = false;
                     default -> System.out.println("❌ Opción no válida. Inténtalo de nuevo.");
                 }
             } catch (NumberFormatException e) {
@@ -109,12 +110,18 @@ public class GeoNotes {
                 2. Por area geográfica (lat/lon)
                 Elige opción: 
                 """);
-        int option = Integer.parseInt(scanner.nextLine ());
+        try{
+            int option = Integer.parseInt(scanner.nextLine ());
 
-        switch (option) {
-            case 1 -> filterNotes();
-            case 2 -> filterNotesByArea();
+            switch (option) {
+                case 1 -> filterNotes();
+                case 2 -> filterNotesByArea();
+                default -> System.out.println("❌ Opción no válida. Inténtalo de nuevo.");
+            }
+        } catch (NumberFormatException e) {
+            System.out.println("❌ Entrada no válida. Por favor, ingresa un número.");
         }
+
     }
 
     private static void printMenu() {
@@ -282,25 +289,33 @@ public class GeoNotes {
 
     private static void listarUltimasNotas(Timeline timeline, Scanner scanner) {
         System.out.print("Introduce el número de notas a listar: ");
-        int n = Integer.parseInt(scanner.nextLine());
+        try {
+            int n = Integer.parseInt(scanner.nextLine());
 
-        var latestNotes = timeline.latest(n);
-        latestNotes.forEach(note ->
-                System.out.println("- " + note.title() + " (" + note.createdAt() + ")"));
+            var latestNotes = timeline.latest(n);
+            latestNotes.forEach(note ->
+                    System.out.println("- " + note.title() + " (" + note.createdAt() + ")"));
+        } catch (NumberFormatException e) {
+            System.out.println("❌ Entrada no válida. Por favor, ingresa un número.");
+        }
     }
 
     private static void consultarUbicacion() {
         System.out.println("\n--- Consultar ubicación (where) ---");
 
-        System.out.print("Introduce la latitud: ");
-        double lat = Double.parseDouble(scanner.nextLine());
-        System.out.print("Introduce la longitud: ");
-        double lon = Double.parseDouble(scanner.nextLine());
+        try {
+            System.out.print("Introduce la latitud: ");
+            double lat = Double.parseDouble(scanner.nextLine());
+            System.out.print("Introduce la longitud: ");
+            double lon = Double.parseDouble(scanner.nextLine());
 
-        GeoPoint point = new GeoPoint(lat, lon);
-        String resultado = Match.where(point);
+            GeoPoint point = new GeoPoint(lat, lon);
+            String resultado = Match.where(point);
 
-        System.out.println("Resultado: " + resultado);
+            System.out.println("Resultado: " + resultado);
+        } catch (NumberFormatException e) {
+            System.out.println("❌ Entrada no válida. Por favor, ingresa un número.");
+        }
     }
 
     private static void listarNotasInvertidas() {
