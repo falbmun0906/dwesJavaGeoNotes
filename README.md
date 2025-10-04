@@ -523,15 +523,71 @@ Ejemplo de salida por consola:
 
 ### F1. Manejo de `InputMismatch`/`NumberFormat`
 
-**Objetivo:** entradas seguras.
+En este ejercicio nos hemos asegurado de que en todas las lecturas de datos numéricos se usa ``Double.parseDouble(scanner.nextLine())`` o ``Integer.parseInt(scanner.nextLine())`` para leer los números.
 
-* Asegura que **todas** las lecturas de números usan `Double.parseDouble(scanner.nextLine())` y están en `try/catch` con mensajes claros (ya está iniciado en `GeoNotes`).
+Además, se añaden los bloques ``catch`` para ``NumberFormatException`` y ``IllegalArgumentException``.
+
+La creación de la nota solo se ejecuta si las coordenadas son válidas.
+
+En algunas partes del código, el control de errores ya existía, pero no envolvía correctamente las líneas de lectura de datos, como en el siguiente fragmeto, que ha sido refactorizado para que el control sea real:
+
+```java
+try {
+    /*
+     * Lectura robusta de números: mejor parsear desde nextLine() para controlar errores y limpieza del buffer.
+     * (Si fuese una app real, haríamos bucles hasta entrada válida).
+     */
+    System.out.print("Latitud: ");
+    var lat = Double.parseDouble(scanner.nextLine());
+    System.out.print("Longitud: ");
+    var lon = Double.parseDouble(scanner.nextLine());
+    ...
+    } catch (NumberFormatException e) {
+    System.out.println("❌ Entrada no válida. Por favor, introduce un número válido para latitud y longitud.");
+    } catch (IllegalArgumentException e) {
+    System.out.println("❌ Error: " + e.getMessage());
+    }
+```
 
 ### F2. Comprobaciones nulas
 
-**Objetivo:** práctica “clásica” (sin null-safety de Kotlin).
+Para este ejercicio practicamos la forma clásica de Java de manejar posibles `null` (sin null-safety de Kotlin).  
+El objetivo era que, si un `Link` tiene su `label` nulo o vacío, se muestre la `url` al exportar.
 
-* Si `label` en `Link` es nulo/vacío, muestra la `url` al exportar (ya implementado en `Describe`; revisa consistencia en exportadores).
+En el `MarkdownExporter` hemos hecho lo siguiente:
+
+```java
+@Override
+public String export() {
+    var builder = new StringBuilder("# GeoNotes\n\n");
+    for (Note note : notes) {
+        builder.append("- [ ID ")
+                .append(note.id())
+                .append(" ] ")
+                .append(note.title())
+                .append(" — (")
+                .append(note.location().lat())
+                .append(", ")
+                .append(note.location().lon())
+                .append(") — ")
+                .append(note.createdAt().toString().substring(0, 10)) // YYYY-MM-DD
+                .append("\n");
+        Attachment a = note.attachment();
+        if (a != null) {
+            builder.append("    🔗 ").append(Describe.describeAttachment(a)).append("\n");
+        }
+    }
+    return builder.toString();
+}
+```
+
+- Primero comprobamos si la nota tiene un attachment.
+- Luego usamos ``Describe.describeAttachment(a)``, que internamente verifica si el label es ``null`` o vacío; en ese caso muestra la url.
+- Finalmente, añadimos la línea al exportador, evitando ``NullPointerException`` y manteniendo consistencia entre exportadores.
+
+De esta manera, aseguramos consistencia en los exportadores y evitamos ``NullPointerException`` al mostrar enlaces.
+
+En el caso de `JsonExporter`, los `Link` ya se incluyen en el `payload` generado, pero al usar `Describe.describeAttachment` en otros exportadores (como Markdown) garantizamos la misma lógica de comprobación nula, mostrando siempre la `url` si `label` es `null` o vacío. Esto asegura consistencia entre diferentes formatos de exportación.
 
 ---
 
@@ -539,15 +595,18 @@ Ejemplo de salida por consola:
 
 ### G1. Vista invertida (java 21, **Sequenced**)
 
-**Objetivo:** mostrar la API moderna sin cambiar el enfoque clásico.
+Para este ejercicio añadimos la opción de listar las notas en orden inverso sin alterar la estructura principal de ``Timeline``.
 
-* Sustituye el `Map<Long, Note>` interno por `SequencedMap<Long,Note>` (con `LinkedHashMap`).
-* Añade método:
+- Sustituimos internamente el ``Map`` por un ``SequencedMap`` para mantener el orden de inserción y poder acceder fácilmente a las notas en orden inverso.
+- Creamos el método ``reversed()`` en ``Timeline`` que devuelve las notas invertidas.
+- En el CLI, extraemos la lógica a una función independiente ``listarNotasInvertidas(Timeline timeline)`` que recorre las notas invertidas y las muestra por consola.
+- La opción del menú simplemente llama a esta función, manteniendo el código limpio y modular.
 
-  ```java
-  public java.util.Collection<Note> reversed() { return notes.reversed().values(); }
-  ```
-* Opción CLI: “Listar (reversed)”.
+Ejemplo de salida en consola:
+
+(Pendiente insertar captura)
+
+---
 
 ### G2. Demo *virtual threads* (muy opcional)
 

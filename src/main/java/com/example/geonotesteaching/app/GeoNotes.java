@@ -78,12 +78,7 @@ public class GeoNotes {
                     case 2 -> listNotes();
                     case 3 -> busquedaAvanzada();
                     case 4 -> exportNotesToJson();
-                    case 5 -> {
-                        var exporter = new MarkdownExporter(
-                                new java.util.ArrayList<>(timeline.getNotes().values())
-                        );
-                        System.out.println(exporter.export());
-                    }
+                    case 5 -> exportMarkDown();
                     case 6 -> listarUltimasNotas(timeline, scanner);
                     case 7 -> consultarUbicacion();
                     case 8 -> running = false;
@@ -98,6 +93,13 @@ public class GeoNotes {
             }
         }
         System.out.println("¡Gracias por usar GeoNotes! 👋");
+    }
+
+    private static void exportMarkDown() {
+        var exporter = new MarkdownExporter(
+                new java.util.ArrayList<>(timeline.getNotes().values())
+        );
+        System.out.println(exporter.export());
     }
 
     private static void busquedaAvanzada() {
@@ -124,7 +126,8 @@ public class GeoNotes {
         System.out.println("5. Exportar Markdown");
         System.out.println("6. Listar últimas notas");
         System.out.println("7. Consultar ubicación (where)");
-        System.out.println("8. Salir");
+        System.out.println("8. Listar notas invertidas");
+        System.out.println("9. Salir");
         System.out.print("Elige una opción: ");
     }
 
@@ -137,15 +140,15 @@ public class GeoNotes {
         System.out.print("Contenido: ");
         var content = scanner.nextLine();
 
-        /*
-         * Lectura robusta de números: mejor parsear desde nextLine() para controlar errores y limpieza del buffer.
-         * (Si fuese una app real, haríamos bucles hasta entrada válida).
-         */
-        System.out.print("Latitud: ");
-        var lat = Double.parseDouble(scanner.nextLine());
-        System.out.print("Longitud: ");
-        var lon = Double.parseDouble(scanner.nextLine());
         try {
+            /*
+             * Lectura robusta de números: mejor parsear desde nextLine() para controlar errores y limpieza del buffer.
+             * (Si fuese una app real, haríamos bucles hasta entrada válida).
+             */
+            System.out.print("Latitud: ");
+            var lat = Double.parseDouble(scanner.nextLine());
+            System.out.print("Longitud: ");
+            var lon = Double.parseDouble(scanner.nextLine());
 
             /*
              * RECORDS (Java 16):
@@ -163,6 +166,8 @@ public class GeoNotes {
             var note = new Note(noteCounter++, title, content, geoPoint, Instant.now(), null);
             timeline.addNote(note);
             System.out.println("✅ Nota creada con éxito.");
+        } catch (NumberFormatException e) {
+            System.out.println("❌ Entrada no válida. Por favor, introduce un número válido para latitud y longitud.");
         } catch (IllegalArgumentException e) {
             System.out.println("❌ Error: " + e.getMessage());
         }
@@ -296,5 +301,12 @@ public class GeoNotes {
         String resultado = Match.where(point);
 
         System.out.println("Resultado: " + resultado);
+    }
+
+    private static void listarNotasInvertidas() {
+        System.out.println("--- Listar notas en orden inverso ---");
+        for (Note note : GeoNotes.timeline.reversed()) {
+            System.out.printf("- %s (%s)%n", note.title(), note.createdAt());
+        }
     }
 }
