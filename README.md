@@ -441,42 +441,81 @@ Como se puede apreciar en la captura, la nueva funcionalidad filtra la nota que 
 
 ### E1. `instanceof` con patrón
 
-**Objetivo:** simplificar *casting*.
+En este bloque hemos trabajado con una de las novedades introducidas en Java 21: el pattern matching en instanceof, que simplifica el casting tradicional y hace el código más expresivo y seguro.
 
-* En `Describe` añade un método:
+Para ello, en la clase ``Describe`` añadimos el método ``mediaPixels(Object o)``, que devuelve el producto de ``width * height`` si el objeto es una ``Photo`` o un ``Video``, y 0 en cualquier otro caso.
 
   ```java
-  static int mediaPixels(Object o)
-  ```
+public static int mediaPixels(Object o) {
+    if (o instanceof Photo p) {
+        return p.width() * p.height();
+    } else if (o instanceof Video v) {
+        return v.width() * v.height();
+    } else {
+        return 0;
+    }
+}
+ ```
 
-  que:
+En versiones anteriores de Java, este código requeriría un casting explícito tras comprobar el tipo:
 
-  * Si es `Photo p`, devuelva `p.width() * p.height()`.
-  * Si es `Video v`, devuelva `v.width() * v.height()`.
-  * Si no, 0.
-* Implementa con `if (o instanceof Photo p) { ... }`.
+```java
+if (o instanceof Photo) {
+    Photo p = (Photo) o;
+    return p.width() * p.height();
+}
+```
+
+Un ejemplo de uso sería:
+
+```java
+System.out.println(mediaPixels(new Photo("paisaje", 1920, 1080))); // 2073600
+System.out.println(mediaPixels(new Video("tutorial", 1280, 720))); // 921600
+System.out.println(mediaPixels("cadena cualquiera"));              // 0
+```
 
 ### E2. *Record patterns* en `if` o `switch`
 
-**Objetivo:** desestructurar con patrón.
+En este ejercicio usamos los record patterns de Java 21 para desestructurar directamente los valores de un ``GeoPoint`` dentro de un ``switch``.
+El objetivo es que el método identifique de forma automática si el punto está en el origen, sobre el ecuador, el meridiano de Greenwich, o en unas coordenadas normales.
 
-* Crea método en `Match`:
+En la clase ``Match`` añadimos el método:
 
-  ```java
-  static String where(GeoPoint p)
-  ```
 
-  que use:
+```java
+public static String where(GeoPoint p) {
+    return switch (p) {
+        case GeoPoint(double lat, double lon) when lat == 0 && lon == 0 -> "ORIGIN";
+        case GeoPoint(double lat, double lon) when lat == 0 -> "Equator";
+        case GeoPoint(double lat, double lon) when lon == 0 -> "Greenwich";
+        case GeoPoint(double lat, double lon) -> "(" + lat + ", " + lon + ")";
+    };
+}
+```
+Gracias a esta sintaxis, no hace falta acceder manualmente a ``p.lat()`` o ``p.lon()``: el propio ``switch`` los extrae y permite aplicar condiciones directamente.
+Es una forma más moderna y legible de escribir este tipo de comprobaciones.
 
-  ```java
-  return switch (p) {
-    case GeoPoint(double lat, double lon) when lat == 0 && lon == 0 -> "ORIGIN";
-    case GeoPoint(double lat, double lon) when lat == 0 -> "Equator";
-    case GeoPoint(double lat, double lon) when lon == 0 -> "Greenwich";
-    case GeoPoint(double lat, double lon) -> "(" + lat + "," + lon + ")";
-  };
-  ```
-* Añade opción CLI para consultar `where`.
+En ``GeoNotes`` añadimos una nueva opción al menú ``8. Consultar ubicación (where)`` que pide las coordenadas por consola y muestra el resultado que devuelve Match.where():
+
+```java
+private static void consultarUbicacion() {
+    System.out.println("\n--- Consultar ubicación (where) ---");
+
+    System.out.print("Introduce la latitud: ");
+    double lat = Double.parseDouble(scanner.nextLine());
+    System.out.print("Introduce la longitud: ");
+    double lon = Double.parseDouble(scanner.nextLine());
+
+    GeoPoint point = new GeoPoint(lat, lon);
+    String resultado = Match.where(point);
+
+    System.out.println("Resultado: " + resultado);
+}
+```
+
+Ejemplo de salida por consola:
+
+(Pendiente insertar captura)
 
 ---
 

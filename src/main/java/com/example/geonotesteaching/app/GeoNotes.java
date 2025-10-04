@@ -85,7 +85,8 @@ public class GeoNotes {
                         System.out.println(exporter.export());
                     }
                     case 6 -> listarUltimasNotas(timeline, scanner);
-                    case 7 -> running = false;
+                    case 7 -> consultarUbicacion();
+                    case 8 -> running = false;
                     default -> System.out.println("❌ Opción no válida. Inténtalo de nuevo.");
                 }
             } catch (NumberFormatException e) {
@@ -122,7 +123,8 @@ public class GeoNotes {
         System.out.println("4. Exportar notas a JSON (Text Blocks)");
         System.out.println("5. Exportar Markdown");
         System.out.println("6. Listar últimas notas");
-        System.out.println("7. Salir");
+        System.out.println("7. Consultar ubicación (where)");
+        System.out.println("8. Salir");
         System.out.print("Elige una opción: ");
     }
 
@@ -280,5 +282,19 @@ public class GeoNotes {
         var latestNotes = timeline.latest(n);
         latestNotes.forEach(note ->
                 System.out.println("- " + note.title() + " (" + note.createdAt() + ")"));
+    }
+
+    private static void consultarUbicacion() {
+        System.out.println("\n--- Consultar ubicación (where) ---");
+
+        System.out.print("Introduce la latitud: ");
+        double lat = Double.parseDouble(scanner.nextLine());
+        System.out.print("Introduce la longitud: ");
+        double lon = Double.parseDouble(scanner.nextLine());
+
+        GeoPoint point = new GeoPoint(lat, lon);
+        String resultado = Match.where(point);
+
+        System.out.println("Resultado: " + resultado);
     }
 }

@@ -7,6 +7,17 @@ import com.example.geonotesteaching.model.*;
 // El 'pattern matching' en el 'case' permite desestructurar el objeto y
 // aplicar una condición ('when') de forma concisa.
 final class Describe {
+
+    public static int mediaPixels(Object o) {
+        if (o instanceof Photo p) {
+            return p.width() * p.height();
+        } else if (o instanceof Video v) {
+            return v.width() * v.height();
+        } else {
+            return 0;
+        }
+    }
+
     public static String describeAttachment(Attachment a) {
         return switch (a) {
             case Photo p when p.width() > 1920 -> "📷 Foto en alta definición (%d x %d)".formatted(p.width(), p.height());
