@@ -604,7 +604,8 @@ Para este ejercicio añadimos la opción de listar las notas en orden inverso si
 
 Ejemplo de salida en consola:
 
-(Pendiente insertar captura)
+<img width="1386" height="442" alt="captura-notas-reversed" src="https://github.com/user-attachments/assets/7edbb7d9-4b43-44b8-a961-232bb05553e5" />
+
 
 ---
 
