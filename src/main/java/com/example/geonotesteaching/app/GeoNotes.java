@@ -82,7 +82,8 @@ public class GeoNotes {
                     case 6 -> listarUltimasNotas(timeline, scanner);
                     case 7 -> consultarUbicacion();
                     case 8 -> listarNotasInvertidas();
-                    case 9 -> running = false;
+                    case 9 -> VirtualDemo.runIO();
+                    case 10 -> running = false;
                     default -> System.out.println("❌ Opción no válida. Inténtalo de nuevo.");
                 }
             } catch (NumberFormatException e) {
@@ -134,7 +135,8 @@ public class GeoNotes {
         System.out.println("6. Listar últimas notas");
         System.out.println("7. Consultar ubicación (where)");
         System.out.println("8. Listar notas invertidas");
-        System.out.println("9. Salir");
+        System.out.println("9. VirtualDemo");
+        System.out.println("10. Salir");
         System.out.print("Elige una opción: ");
     }
 

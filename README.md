@@ -606,19 +606,39 @@ Ejemplo de salida en consola:
 
 <img width="1386" height="442" alt="captura-notas-reversed" src="https://github.com/user-attachments/assets/7edbb7d9-4b43-44b8-a961-232bb05553e5" />
 
-
 ---
 
 ### G2. Demo *virtual threads* (muy opcional)
 
-**Objetivo:** idea general de Loom.
+En este ejercicio hemos añadido una clase auxiliar llamada ``VirtualDemo``, ubicada en el paquete ``service``, ya que su función pertenece a la lógica de ejecución del programa y no al modelo de datos ni a la interfaz de usuario.
 
-* Crea `VirtualDemo.runIO()` que lance \~50 tareas “simuladas” (sleep 200–300 ms) con:
+La clase VirtualDemo utiliza un ``ExecutorService`` basado en hilos virtuales (``Executors.newVirtualThreadPerTaskExecutor()``), una característica moderna de Java que permite ejecutar múltiples tareas de forma concurrente y eficiente sin crear un hilo físico por cada tarea.
 
-  ```java
-  try (var exec = java.util.concurrent.Executors.newVirtualThreadPerTaskExecutor()) { ... }
-  ```
-* Muestra el hilo actual en cada tarea. **No** mezclar con la lógica del proyecto (solo demo).
+```java
+public class VirtualDemo {
+    public static void runIO() {
+        try (var exec = java.util.concurrent.Executors.newVirtualThreadPerTaskExecutor()) {
+            for (int i = 1; i <= 50; i++) {
+                int taskId = i;
+                exec.submit(() -> {
+                    try {
+                        Thread.sleep(200 + (int)(Math.random() * 100)); // 200–300ms
+                    } catch (InterruptedException e) {
+                        Thread.currentThread().interrupt();
+                    }
+                    System.out.println("Tarea " + taskId + " ejecutada en " + Thread.currentThread());
+                });
+            }
+        }
+        System.out.println("✅ Todas las tareas lanzadas (Virtual Threads demo)");
+    }
+}
+```
+
+Cada tarea se lanza mediante ``exec.submit()`` dentro de un bucle de 50 iteraciones, simulando operaciones de entrada/salida con ``Thread.sleep()`` y mostrando el hilo en el que se ejecuta.
+
+Las tareas no se ejecutan de forma secuencial, sino en paralelo, gracias a que cada una se ejecuta en su propio hilo virtual.
+Esto demuestra el comportamiento concurrente del sistema y la ligereza de los virtual threads frente a los hilos tradicionales.
 
 ---
 
